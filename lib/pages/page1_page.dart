@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_states/services/user_service.dart';
+
+import '../models/user.dart';
+
 class Page1 extends StatelessWidget {
   const Page1({Key? key}) : super(key: key);
 
@@ -13,7 +17,16 @@ class Page1 extends StatelessWidget {
         onPressed: () => Navigator.pushNamed(context, 'page2'),
         child: const Icon(Icons.account_tree),
       ),
-      body: UserInformation(),
+      body: StreamBuilder(
+        stream: userService.userStream,
+        builder: (BuildContext context, AsyncSnapshot<User> snapshot) {
+          return snapshot.hasData
+              ? UserInformation(
+                  user: snapshot.data!,
+                )
+              : const Center(child: Text('There are not users'));
+        },
+      ),
     );
   }
 }
@@ -23,6 +36,10 @@ class UserInformation extends StatelessWidget {
   //   Key? key,
   // }) : super(key: key);
 
+  final User user;
+
+  const UserInformation({super.key, required this.user});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,30 +48,30 @@ class UserInformation extends StatelessWidget {
       height: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const <Widget>[
-          Text(
+        children: <Widget>[
+          const Text(
             'General',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
-            title: Text('Name'),
+            title: Text('Name: ${user.name}'),
           ),
           ListTile(
-            title: Text('Age'),
+            title: Text('Age: ${user.age}'),
           ),
-          Text(
+          const Text(
             'Professions',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          Divider(),
-          ListTile(
+          const Divider(),
+          const ListTile(
             title: Text('Profesion1'),
           ),
-          ListTile(
+          const ListTile(
             title: Text('Profesion2'),
           ),
-          ListTile(
+          const ListTile(
             title: Text('Profesion3'),
           ),
         ],
